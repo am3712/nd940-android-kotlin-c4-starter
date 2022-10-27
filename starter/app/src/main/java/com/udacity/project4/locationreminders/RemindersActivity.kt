@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.firebase.ui.auth.AuthUI
+import com.google.firebase.auth.FirebaseAuth
 import com.udacity.project4.R
 import com.udacity.project4.authentication.AuthenticationActivity
 import com.udacity.project4.databinding.ActivityRemindersBinding
@@ -31,6 +32,11 @@ class RemindersActivity : AppCompatActivity() {
         FirebaseUserLiveData().observe(this) { firebaseUser ->
             if (firebaseUser == null) navigateToAuthenticationActivity()
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (FirebaseAuth.getInstance().currentUser == null) navigateToAuthenticationActivity()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
