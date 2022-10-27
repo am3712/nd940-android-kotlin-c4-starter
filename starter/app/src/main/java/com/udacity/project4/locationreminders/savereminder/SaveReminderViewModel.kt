@@ -19,7 +19,7 @@ class SaveReminderViewModel(val app: Application, private val dataSource: Remind
     val reminderTitle = MutableLiveData<String>()
     val reminderDescription = MutableLiveData<String>()
     val selectedPOI = MutableLiveData<PointOfInterest>()
-    val reminderSelectedLocationStr = selectedPOI.map { it.name ?: "" }
+    val reminderSelectedLocationStr = selectedPOI.map { it?.name ?: "" }
     val addGeofenceEvent = SingleLiveEvent<ReminderDataItem>()
 
     /**
