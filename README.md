@@ -47,8 +47,30 @@ Explain what each test does and why
      - Testing uses `@Before` to initDb using `Room.inMemoryDatabaseBuilder` & `@After` to closeDb.
      - @Test `insertReminderAndGetById` insert a reminder & when Get the reminder by id from the database make sure The loaded data contains the expected values.
      - @Test `updateTaskAndGetById` insert a reminder & when the task is updated  make sure The loaded data contains the expected values.
-1. test
-        //TODO: Students explain their testing here.
+2. test
+   - `FakeDataSource` that acts as a test double to the ReminderDataSource.
+     - Implementation of a data source with static access to the data for easy testing using param `reminders` mutable list of reminders that passed through class constructor.
+     - `shouldReturnError` boolean variable for testing purpose to control the behavior of functions (getReminders(), getReminder(id: String)) to force return `Result.Error` with message "Test exception" & default value is false.
+     - fun `getReminders()` just check if shouldReturnError to return `Result.Error` else return `reminders` list data.
+     - fun `saveReminder()` accept reminder data as paramater and just add it to `reminders` list.
+     - fun `getReminder(id:String)` overloaded fun to get reminder by id first check if shouldReturnError then return `Result.Error` else search in `reminders` list if item not found then return Result.Error with message "Reminder not found!" else return item.
+     - fun `deleteAllReminders()` clear items that reminders list hold.
+   - `RemindersListViewModelTest` 
+     - `mainCoroutineRule` Set the main coroutines dispatcher for unit testing.
+     - `instantExecutorRule` Executes each task synchronously using Architecture Components.
+     - `Before` setupViewModel We initialise listViewModel with the fakeDataSource.
+     - `After` tearDown stopKoin.
+     - `loadRemainders_showLoading` Pause dispatcher so we can verify initial values & When loading remainders then loading event is triggered.
+     - `loadRemainders_shouldReturnError` Make the repository return errors & When loading remainders Then an error message is shown.
+     - `loadRemainders_withEmptyList_showNoData` Given empty remainders list & When loading remainders Then the showNoData event is triggered.
+     - `loadRemainders_withOneRemainders_appears` With a dataSource that has a 1 remainder When loading remainders Then reminderList must contains added reminder info.
+   - `SaveReminderViewModelTest` provide testing to the SaveReminderViewModel and its live data objects
+     - `mainCoroutineRule` Set the main coroutines dispatcher for unit testing.
+     - `instantExecutorRule` Executes each task synchronously using Architecture Components.
+     - `Before` setupViewModel We initialise saveReminderViewModel with the fakeDataSource.
+     - `After` tearDown stopKoin.
+     - `invalidReminderTitle_onSaveReminder_showSnackBarInt` given invalid title value which is null or empty When call onSaveReminder() Then snackBarInt event is triggered with String Res [R.string.err_enter_title] "Please enter title"
+     - `invalidReminderLocation_onSaveReminder_showSnackBarInt` Given invalid location value which is null by default or empty When call onSaveReminder() Then snackBarInt event is triggered with String Res [R.string.err_select_location] "Please select location"
 
 
 ## Project Instructions

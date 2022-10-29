@@ -68,7 +68,7 @@ class SaveReminderFragment : BaseFragment() {
             //  validate inputs & if valid:
             //  1) add a geofencing request
             //  2) save the reminder to the local db
-            _viewModel.validateAndAddGeofencingRequest()
+            _viewModel.onSaveReminder()
         }
         _viewModel.addGeofenceEvent.observe(viewLifecycleOwner) { reminderDataItem ->
             if (reminderDataItem != null) checkPermissionsAndStartGeofencing()

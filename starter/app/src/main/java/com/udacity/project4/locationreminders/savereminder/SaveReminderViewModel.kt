@@ -33,9 +33,9 @@ class SaveReminderViewModel(val app: Application, private val dataSource: Remind
     }
 
     /**
-     * Validate the entered data then saves the reminder data to the DataSource
+     * Validate the entered data then fire adding geofence event
      */
-    fun validateAndAddGeofencingRequest() {
+    fun onSaveReminder() {
         val reminderData = ReminderDataItem(
             title = reminderTitle.value,
             description = reminderDescription.value,
