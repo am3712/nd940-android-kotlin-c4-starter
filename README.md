@@ -40,12 +40,16 @@ Right click on the `test` or `androidTest` packages and select Run Tests
 
 Explain what each test does and why
 
-```
-1.androidTest
+
+1. androidTest
+   - `RemindersDaoTest` Unit test the DAO
+     - Testing uses `Room.inMemoryDatabaseBuilder` to create a Room DB instance.
+     - Testing uses `@Before` to initDb using `Room.inMemoryDatabaseBuilder` & `@After` to closeDb.
+     - @Test `insertReminderAndGetById` insert a reminder & when Get the reminder by id from the database make sure The loaded data contains the expected values.
+     - @Test `updateTaskAndGetById` insert a reminder & when the task is updated  make sure The loaded data contains the expected values.
+1. test
         //TODO: Students explain their testing here.
-2. test
-        //TODO: Students explain their testing here.
-```
+
 
 ## Project Instructions
     1. Create a Login screen to ask users to login using an email address or a Google account.  Upon successful login, navigate the user to the Reminders screen.   If there is no account, the app should navigate to a Register screen.
