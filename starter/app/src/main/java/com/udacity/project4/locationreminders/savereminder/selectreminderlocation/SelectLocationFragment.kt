@@ -46,12 +46,10 @@ class SelectLocationFragment : BaseFragment() {
             DataBindingUtil.inflate(inflater, R.layout.fragment_select_location, container, false)
 
         binding.viewModel = _viewModel
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
 
         setHasOptionsMenu(true)
         setDisplayHomeAsUpEnabled(true)
-
-//        TODO: add the map setup implementation
         val mapFragment =
             childFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
@@ -76,7 +74,7 @@ class SelectLocationFragment : BaseFragment() {
             if (selectedPoi != null) {
                 onLocationSelected()
             } else {
-                _viewModel.showSnackBarInt.value = R.string.err_select_location
+                _viewModel.showSnackBarInt.value = R.string.select_poi
             }
         }
 
