@@ -3,15 +3,20 @@ package com.udacity.project4.locationreminders.reminderslist
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.location.LocationServices
 import com.udacity.project4.base.BaseViewModel
 import com.udacity.project4.locationreminders.data.ReminderDataSource
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.data.dto.Result
+import com.udacity.project4.utils.SingleLiveEvent
+import com.udacity.project4.utils.geofencePendingIntent
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import timber.log.Timber
 
 class RemindersListViewModel(
-    app: Application,
-    private val dataSource: ReminderDataSource
+    private val app: Application, private val dataSource: ReminderDataSource
 ) : BaseViewModel(app) {
     // list that holds the reminder data to be displayed on the UI
     val remindersList = MutableLiveData<List<ReminderDataItem>>()
@@ -42,8 +47,7 @@ class RemindersListViewModel(
                     })
                     remindersList.value = dataList
                 }
-                is Result.Error ->
-                    showSnackBar.value = result.message
+                is Result.Error -> showSnackBar.value = result.message
             }
 
             //check if no data has to be shown
@@ -56,5 +60,27 @@ class RemindersListViewModel(
      */
     private fun invalidateShowNoData() {
         showNoData.value = remindersList.value == null || remindersList.value!!.isEmpty()
+    }
+
+
+    val logoutEvent = SingleLiveEvent<Boolean>()
+
+    // logout logic:
+    // 1) unregister geofences
+    // 2) remove reminders data
+    // 3) trigger logout event to use FirebaseAuth logout
+    fun unregisterAndClearRemindersDataAndProcessLogout() {
+        val geofencingClient = LocationServices.getGeofencingClient(app)
+        viewModelScope.launch(Dispatchers.IO) {
+            remindersList.value?.forEach { reminder ->
+                try {
+                    geofencingClient.removeGeofences(app.geofencePendingIntent(reminder.id)).await()
+                } catch (ex: Exception) {
+                    Timber.e("Failed to remove geofence of reminder: $reminder", ex)
+                }
+            }
+            dataSource.deleteAllReminders()
+            logoutEvent.postValue(true)
+        }
     }
 }

@@ -6,7 +6,6 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import com.udacity.project4.R
 import com.udacity.project4.authentication.AuthenticationActivity
@@ -45,8 +44,6 @@ class RemindersActivity : AppCompatActivity() {
                 navController.popBackStack()
                 return true
             }
-            R.id.logout -> AuthUI.getInstance().signOut(this)
-                .addOnCompleteListener { navigateToAuthenticationActivity() }
         }
         return super.onOptionsItemSelected(item)
     }
